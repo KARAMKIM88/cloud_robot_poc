@@ -10,6 +10,8 @@ import time
 os.system('roscore &' )
 time.sleep(5)
 os.system('rosrun video_stream_opencv video_stream &' )
+#os.system('roslaunch turtlebot3_navigation turtlebot3_navigation.launch map_file:=$HOME/map.yaml')
+#map 파일 작성 전 입니다. 
 #os.system('rosrun web_video_server web_video_server &' ) for debugging
 
 """

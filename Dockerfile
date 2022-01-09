@@ -8,6 +8,7 @@ ARG userid=1000
 
 ENV ROS_MASTER_URI http://localhost:11311
 ENV ROS_HOSTNAME localhost
+ENV URTLEBOT3_MODEL waffle_pi
 
 # USE BASH
 SHELL ["/bin/bash", "-c"]
