@@ -9,16 +9,14 @@ import time
 
 os.system('roscore &' )
 time.sleep(5)
-os.system('rosrun web_video_server web_video_server &' )
 os.system('rosrun video_stream_opencv video_stream &' )
+#os.system('rosrun web_video_server web_video_server &' ) for debugging
 
 """
 subprocess.Popen(['roscore'])
 subprocess.Popen(['rosrun web_video_server web_video_server'])
 subprocess.Popen(['rosrun video_stream_opencv video_stream_opencv'])
 """
-
-
 
 handler = http.server.SimpleHTTPRequestHandler
 

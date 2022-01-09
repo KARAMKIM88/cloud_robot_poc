@@ -6,6 +6,9 @@ ARG username=rosmaster
 ARG groupid=1000
 ARG userid=1000
 
+ENV ROS_MASTER_URI http://localhost:11311
+ENV ROS_HOSTNAME localhost
+
 # USE BASH
 SHELL ["/bin/bash", "-c"]
 
@@ -13,8 +16,6 @@ SHELL ["/bin/bash", "-c"]
 RUN echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections
 
 RUN apt-get update
-RUN apt-cache policy cmake
-RUN apt-get install cmake=3.10.2
 RUN apt-get update && apt-get install -y --no-install-recommends apt-utils
 
 #### 6.1.2 
@@ -40,13 +41,16 @@ RUN  apt-get update -y && apt-get install -y ros-kinetic-joy \
     ros-kinetic-xacro ros-kinetic-compressed-image-transport \
     ros-kinetic-rqt-image-view ros-kinetic-gmapping ros-kinetic-navigation \
     ros-kinetic-interactive-markers ros-kinetic-dynamixel-sdk ros-kinetic-turtlebot3-msgs \
-    ros-kinetic-turtlebot3 ros-kinetic-cv-bridge ros-kinetic-vision-opencv
-RUN source ros_entrypoint.sh \
-    && cd /catkin_ws/src \
-    && git clone https://github.com/RobotWebTools/web_video_server.git \
-    && git clone  https://github.com/fkie/async_web_server_cpp.git  \
-    && cd /catkin_ws \
-    && catkin_make
+    ros-kinetic-turtlebot3 ros-kinetic-cv-bridge ros-kinetic-vision-opencv \
+    ros-kinetic-video-stream-opencv
+COPY ./devel_final /catkin_ws/devel
+RUN source ros_entrypoint.sh
+RUN source /catkin_ws/devel/setup.bash 
+####    && cd /catkin_ws/src \
+####    && git clone https://github.com/RobotWebTools/web_video_server.git \
+####    && git clone  https://github.com/fkie/async_web_server_cpp.git  \
+####    && cd /catkin_ws \
+####    && catkin_make
 
 #### 6.1.4
 RUN apt-get install -y net-tools && apt-get install -y iputils-ping
@@ -57,8 +61,11 @@ RUN groupadd -g $groupid $username \
     && useradd -m -r -u $userid -g $username $username
 USER $username
 RUN echo "source /opt/ros/kinetic/setup.bash" >> /home/$username/.bashrc
-#    && echo "export ROS_HOSTNAME=localhost" >> ~/.bashrc
-RUN echo "source /catkin_ws/devel/setup.bash" >> /home/$username/.bashrc
-COPY run_multiprocessing.py /root/run_multiprocessing.py
 
-CMD ["python /root/run_multiprocessing.py"]
+COPY ./run_multiprocess.py /run_multiprocess.py
+
+RUN echo "source /catkin_ws/devel/setup.bash" >> /home/$username/.bashrc
+
+
+
+CMD ["python3 /run_multiprocess.py"]
