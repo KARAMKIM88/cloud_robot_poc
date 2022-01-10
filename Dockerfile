@@ -8,7 +8,7 @@ ARG userid=1000
 
 ENV ROS_MASTER_URI http://localhost:11311
 ENV ROS_HOSTNAME localhost
-ENV URTLEBOT3_MODEL waffle_pi
+ENV TURTLEBOT3_MODEL waffle_pi
 
 # USE BASH
 SHELL ["/bin/bash", "-c"]
@@ -69,4 +69,4 @@ RUN echo "source /catkin_ws/devel/setup.bash" >> /home/$username/.bashrc
 
 
 
-CMD ["python3 /run_multiprocess.py"]
+CMD ["/run_multiprocess.py"]
