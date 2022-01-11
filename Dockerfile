@@ -6,8 +6,8 @@ ARG username=rosmaster
 ARG groupid=1000
 ARG userid=1000
 
-ENV ROS_MASTER_URI http://localhost:11311
-ENV ROS_HOSTNAME localhost
+ENV ROS_MASTER_URI http://192.168.219.104:11311
+ENV ROS_HOSTNAME 192.168.219.104
 ENV TURTLEBOT3_MODEL waffle_pi
 
 # USE BASH
@@ -29,8 +29,9 @@ RUN source ros_entrypoint.sh \
     && catkin_init_workspace \
     && cd /catkin_ws \
     && catkin_make
-RUN echo "source /catkin_ws/devel/setup.bash" >> ~/.bashrc \
-    && echo "export ROS_HOSTNAME=localhost" >> ~/.bashrc
+COPY ./install /catkin_ws/install
+
+
 
 #### 6.1.3
 RUN  apt-get update -y && apt-get install -y ros-kinetic-joy \
@@ -45,10 +46,9 @@ RUN  apt-get update -y && apt-get install -y ros-kinetic-joy \
     ros-kinetic-interactive-markers ros-kinetic-dynamixel-sdk ros-kinetic-turtlebot3-msgs \
     ros-kinetic-turtlebot3 ros-kinetic-cv-bridge ros-kinetic-vision-opencv \
     ros-kinetic-video-stream-opencv
-COPY ./devel_final /catkin_ws/devel
+
 COPY ./turtlebot3_navigation.launch /opt/ros/kinetic/share/turtlebot3_navigation/launch/turtlebot3_navigation.launch
-RUN source ros_entrypoint.sh
-RUN source /catkin_ws/devel/setup.bash 
+#### RUN source /catkin_ws/devel/setup.bash 
 ####    && cd /catkin_ws/src \
 ####    && git clone https://github.com/RobotWebTools/web_video_server.git \
 ####    && git clone  https://github.com/fkie/async_web_server_cpp.git  \
@@ -62,13 +62,19 @@ RUN apt-get install -y net-tools && apt-get install -y iputils-ping
 # -m option creates a fake writable home folder
 RUN groupadd -g $groupid $username \
     && useradd -m -r -u $userid -g $username $username
+
 USER $username
+
 RUN echo "source /opt/ros/kinetic/setup.bash" >> /home/$username/.bashrc
+RUN echo "source /catkin_ws/install/setup.bash" >> /home/$username/.bashrc
 
-COPY ./map  /home/rosmaster/map
+COPY ./map  /home/$username/map
 COPY ./run_multiprocess.py /run_multiprocess.py
-RUN echo "source /catkin_ws/devel/setup.bash" >> /home/$username/.bashrc
-RUN mkdir /home/rosmaster/ros-log
+COPY ./web_video_server.sh /web_video_server.sh
 
+RUN mkdir /home/$username/ros-log
+RUN chown -R :$username /home/$username/ros-log
+RUN source web_video_server.sh
+ 
 
-#CMD ["/run_multiprocess.py"]
+CMD ["/run_multiprocess.py"]

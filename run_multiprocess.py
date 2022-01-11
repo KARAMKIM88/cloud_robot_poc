@@ -17,6 +17,7 @@ print("ROS_MASTER_URI : " + ROS_MASTER_URI)
 print("ROS_HOSTNAME : " + ROS_HOSTNAME)
 print("TURTLEBOT3_MODEL : " + TURTLEBOT3_MODEL)
 
+os.system('source /home/rosmaster/.bashrc' )
 os.system('(roscore >> /home/rosmaster/ros-log/roscore-kkr.log) & ' )
 time.sleep(5)
 #os.system('rosrun video_stream_opencv video_stream &' )  for debugging
@@ -31,9 +32,11 @@ subprocess.Popen(['rosrun video_stream_opencv video_stream_opencv'])
 """
 
 
+
 HOST, PORT = "localhost", 10808
 Handler = SimpleHTTPServer.SimpleHTTPRequestHandler
 
 httpd = SocketServer.TCPServer((HOST, PORT), Handler)
 print('Server listening on port 10808...')
 httpd.serve_forever()
+
