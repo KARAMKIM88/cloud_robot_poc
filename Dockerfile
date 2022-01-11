@@ -17,9 +17,10 @@ SHELL ["/bin/bash", "-c"]
 RUN echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections
 
 RUN apt-get update
-RUN apt-get update && apt-get install -y --no-install-recommends apt-utils
-
-#### 6.1.2 
+RUN apt-get update && apt-get install -y --no-install-recommends apt-utils 
+#
+### 6.1.2
+RUN apt-get install -y vim
 RUN apt-get install -y ros-kinetic-desktop-full ros-kinetic-rqt-*
 RUN apt-get install -y python-rosinstall
 RUN source ros_entrypoint.sh \
@@ -45,6 +46,7 @@ RUN  apt-get update -y && apt-get install -y ros-kinetic-joy \
     ros-kinetic-turtlebot3 ros-kinetic-cv-bridge ros-kinetic-vision-opencv \
     ros-kinetic-video-stream-opencv
 COPY ./devel_final /catkin_ws/devel
+COPY ./turtlebot3_navigation.launch /opt/ros/kinetic/share/turtlebot3_navigation/launch/turtlebot3_navigation.launch
 RUN source ros_entrypoint.sh
 RUN source /catkin_ws/devel/setup.bash 
 ####    && cd /catkin_ws/src \
@@ -64,9 +66,8 @@ USER $username
 RUN echo "source /opt/ros/kinetic/setup.bash" >> /home/$username/.bashrc
 
 COPY ./run_multiprocess.py /run_multiprocess.py
-
 RUN echo "source /catkin_ws/devel/setup.bash" >> /home/$username/.bashrc
+RUN mkdir /home/rosmaster/ros-log
 
 
-
-CMD ["/run_multiprocess.py"]
+#CMD ["/run_multiprocess.py"]
