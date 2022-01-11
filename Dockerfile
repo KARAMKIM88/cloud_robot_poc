@@ -6,8 +6,8 @@ ARG username=rosmaster
 ARG groupid=1000
 ARG userid=1000
 
-ENV ROS_MASTER_URI http://192.168.219.104:11311
-ENV ROS_HOSTNAME 192.168.219.104
+ENV ROS_MASTER_URI http://192.168.0.2:11311
+ENV ROS_HOSTNAME 192.168.0.2
 ENV TURTLEBOT3_MODEL waffle_pi
 
 # USE BASH
@@ -20,26 +20,9 @@ RUN apt-get update
 RUN apt-get update && apt-get install -y --no-install-recommends apt-utils 
 #
 ### 6.1.2
-COPY ./install /catkin_ws/install
-COPY ./ros_entrypoint.sh /ros_entrypoint.sh
-
 RUN apt-get install -y vim
 RUN apt-get install -y ros-kinetic-desktop-full ros-kinetic-rqt-*
 RUN apt-get install -y python-rosinstall
-RUN source ros_entrypoint.sh \
-    && mkdir -p /catkin_ws/src \
-    && cd /catkin_ws/src \
-    && catkin_init_workspace \
-    && cd /catkin_ws \
-    && catkin_make
-#### COPY ./install /catkin_ws/install
-#### COPY ./web_video_server.sh /home/$username/web_video_server.sh
-#### RUN chmod +x /home/$username/web_video_server.sh
-#### RUN /home/$username/web_video_server.sh
-
-
-
-#### 6.1.3
 RUN  apt-get update -y && apt-get install -y ros-kinetic-joy \
     ros-kinetic-teleop-twist-joy ros-kinetic-teleop-twist-keyboard \
     ros-kinetic-laser-proc ros-kinetic-rgbd-launch \
@@ -51,15 +34,19 @@ RUN  apt-get update -y && apt-get install -y ros-kinetic-joy \
     ros-kinetic-rqt-image-view ros-kinetic-gmapping ros-kinetic-navigation \
     ros-kinetic-interactive-markers ros-kinetic-dynamixel-sdk ros-kinetic-turtlebot3-msgs \
     ros-kinetic-turtlebot3 ros-kinetic-cv-bridge ros-kinetic-vision-opencv \
-    ros-kinetic-video-stream-opencv
+    ros-kinetic-video-stream-opencv ros-kinetic-web-video-server
+RUN source ros_entrypoint.sh \
+    && mkdir -p /catkin_ws/src \
+    && cd /catkin_ws/src \
+    && catkin_init_workspace \
+    && cd /catkin_ws \
+    && catkin_make \ 
+    && catkin_make install
 
+
+
+#### 6.1.3
 COPY ./turtlebot3_navigation.launch /opt/ros/kinetic/share/turtlebot3_navigation/launch/turtlebot3_navigation.launch
-#### RUN source /catkin_ws/devel/setup.bash 
-####    && cd /catkin_ws/src \
-####    && git clone https://github.com/RobotWebTools/web_video_server.git \
-####    && git clone  https://github.com/fkie/async_web_server_cpp.git  \
-####    && cd /catkin_ws \
-####    && catkin_make
 
 #### 6.1.4
 RUN apt-get install -y net-tools && apt-get install -y iputils-ping
@@ -71,9 +58,9 @@ RUN apt-get install -y net-tools && apt-get install -y iputils-ping
 RUN groupadd -g $groupid $username \
     && useradd -m -r -u $userid -g $username $username
 
-COPY ./web_video_server.sh /home/$username/web_video_server.sh
-RUN chmod +777 /home/$username/web_video_server.sh
-
+#### COPY ./web_video_server.sh /home/$username/web_video_server.sh
+#### RUN chmod +777 /home/$username/web_video_server.sh
+#### RUN /bin/bash -c "source /catkin_ws/install/setup.bash"
 USER $username
 
 #### RUN echo "source /opt/ros/kinetic/setup.bash" >> /home/$username/.bashrc
