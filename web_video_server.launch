@@ -1,0 +1,4 @@
+<launch>
+  <node name="web_video_server" pkg="web_video_server" name="web_video_server" />
+  <rosparam name="address" type="std::string" value="192.168.219.104" />
+</launch>
