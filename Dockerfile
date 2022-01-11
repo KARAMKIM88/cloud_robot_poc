@@ -65,6 +65,7 @@ RUN groupadd -g $groupid $username \
 USER $username
 RUN echo "source /opt/ros/kinetic/setup.bash" >> /home/$username/.bashrc
 
+COPY ./map  /home/rosmaster/map
 COPY ./run_multiprocess.py /run_multiprocess.py
 RUN echo "source /catkin_ws/devel/setup.bash" >> /home/$username/.bashrc
 RUN mkdir /home/rosmaster/ros-log

@@ -20,8 +20,8 @@ print("TURTLEBOT3_MODEL : " + TURTLEBOT3_MODEL)
 os.system('(roscore >> /home/rosmaster/ros-log/roscore-kkr.log) & ' )
 time.sleep(5)
 #os.system('rosrun video_stream_opencv video_stream &' )  for debugging
-os.system('(roslaunch turtlebot3_navigation turtlebot3_navigation.launch map_file:=$HOME/map.yaml >> /home/rosmaster/ros-log/rosnavi-kkr.log ) &' )
-os.system('(rosrun web_video_server web_video_server >> /home/rosmatser/ros-log/rosvideo-kkr.log ) &' )
+os.system('(roslaunch turtlebot3_navigation turtlebot3_navigation.launch map_file:=/home/rosmaster/map/map.yaml >> /home/rosmaster/ros-log/rosnavi-kkr.log ) &' )
+os.system('(rosrun web_video_server web_video_server >> /home/rosmaster/ros-log/rosvideo-kkr.log ) &' )
 
 
 """
