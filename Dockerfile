@@ -20,6 +20,9 @@ RUN apt-get update
 RUN apt-get update && apt-get install -y --no-install-recommends apt-utils 
 #
 ### 6.1.2
+COPY ./install /catkin_ws/install
+COPY ./ros_entrypoint.sh /ros_entrypoint.sh
+
 RUN apt-get install -y vim
 RUN apt-get install -y ros-kinetic-desktop-full ros-kinetic-rqt-*
 RUN apt-get install -y python-rosinstall
@@ -29,7 +32,10 @@ RUN source ros_entrypoint.sh \
     && catkin_init_workspace \
     && cd /catkin_ws \
     && catkin_make
-COPY ./install /catkin_ws/install
+#### COPY ./install /catkin_ws/install
+#### COPY ./web_video_server.sh /home/$username/web_video_server.sh
+#### RUN chmod +x /home/$username/web_video_server.sh
+#### RUN /home/$username/web_video_server.sh
 
 
 
@@ -58,23 +64,28 @@ COPY ./turtlebot3_navigation.launch /opt/ros/kinetic/share/turtlebot3_navigation
 #### 6.1.4
 RUN apt-get install -y net-tools && apt-get install -y iputils-ping
 
+
+
 # setup user env at the end
 # -m option creates a fake writable home folder
 RUN groupadd -g $groupid $username \
     && useradd -m -r -u $userid -g $username $username
 
+COPY ./web_video_server.sh /home/$username/web_video_server.sh
+RUN chmod +777 /home/$username/web_video_server.sh
+
 USER $username
 
-RUN echo "source /opt/ros/kinetic/setup.bash" >> /home/$username/.bashrc
-RUN echo "source /catkin_ws/install/setup.bash" >> /home/$username/.bashrc
+#### RUN echo "source /opt/ros/kinetic/setup.bash" >> /home/$username/.bashrc
+#### RUN echo "source /catkin_ws/install/setup.bash" >> /home/$username/.bashrc
 
 COPY ./map  /home/$username/map
-COPY ./run_multiprocess.py /run_multiprocess.py
-COPY ./web_video_server.sh /web_video_server.sh
+RUN mkdir -p /home/$username/ros-log
 
-RUN mkdir /home/$username/ros-log
-RUN chown -R :$username /home/$username/ros-log
-RUN source web_video_server.sh
- 
+COPY ./run_multiprocess.py /run_multiprocess.py
+
+
+
+
 
 CMD ["/run_multiprocess.py"]
