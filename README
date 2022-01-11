@@ -2,8 +2,11 @@ Cloud Robot PoC
 
 karamkim88@lguplus.co.kr
 
+This is for turtlebot3 & ros dockerfile
 - Docker file
-- multiprocessing file 
+ : install ros and packages
+- multiprocessing file (Python)
  : Navigation
  : Video Streaming
- 
+- command 
+ : run --net=host -p 443:443 -p 11311:11311  image_name 
