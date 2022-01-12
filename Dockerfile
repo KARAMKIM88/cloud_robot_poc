@@ -6,8 +6,8 @@ ARG username=rosmaster
 ARG groupid=1000
 ARG userid=1000
 
-ENV ROS_MASTER_URI http://192.168.0.2:11311
-ENV ROS_HOSTNAME 192.168.0.2
+ENV ROS_MASTER_URI localhost:11311
+ENV ROS_HOSTNAME localhost
 ENV TURTLEBOT3_MODEL waffle_pi
 
 # USE BASH
